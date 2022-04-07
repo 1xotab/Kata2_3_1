@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -21,16 +22,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(int id) {
-        User user = get(id);
-        entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
+        Query query = entityManager.createQuery("delete from User where id =:userID");
+        query.setParameter("userID", id);
+        query.executeUpdate();
     }
 
     @Override
     public User get(int id) {
-
-        User user = entityManager.find(User.class, id);
-        entityManager.detach(user);
-        return user;
+        return entityManager.find(User.class, id);
     }
 
 
